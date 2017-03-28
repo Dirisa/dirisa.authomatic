@@ -26,7 +26,7 @@ setup(name='dirisa.authomatic',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'pas.plugin.authomatic',
+          'pas.plugins.authomatic',
       ],
       entry_points="""
       # -*- Entry points: -*-
