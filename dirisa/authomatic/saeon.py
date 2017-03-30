@@ -79,24 +79,30 @@ class SAEON(OAuth2):
     supported_user_attributes = core.SupportedUserAttributes(
         email=True,
         id=True,
-        link=False,
-        location=False,
+        username=True,
         name=True,
+        link=True,
+        location=False,
         picture=False,
-        username=True
     )
     
     @staticmethod
     def _x_user_parser(user, data):
-        user.username = data.get('name')
+        logging.debug('_x_user_parser: data = %s' % data)
+        user.username = data.get('preferred_username')
+        user.email = data.get('email')
+        user.id = data.get('email')
+        user.fullname = "%s %s" % (
+                data.get('given_name'), data.get('family_name'))
+        user.name = user.fullname
+        user.link = 'http://www.saeon.ac.za' #data.get('html_url')
         #user.picture = data.get('avatar_url')
-        #user.link = data.get('html_url')
+        logging.debug('_x_user_parser: user = %s' % user)
         return user
     
     @classmethod
     def _x_credentials_parser(cls, credentials, data):
-        import pdb; pdb.set_trace()
-        if data.get('token_type') == 'bearer':
+        if data.get('token_type') == 'Bearer':
             credentials.token_type = cls.BEARER
         return credentials
 
@@ -104,4 +110,77 @@ class SAEON(OAuth2):
 # The provider type ID is generated from this list's indexes!
 # Always append new providers at the end so that ids of existing providers don't change!
 PROVIDER_ID_MAP.append(SAEON)
-
+"""
+{
+"github": {
+"id": 1,
+"display": {
+"title": "Github",
+"cssclasses": {
+"button": "plone-btn plone-btn-default",
+"icon": "glypicon glyphicon-github"
+},
+"as_form": false
+},
+"propertymap": {
+"email": "email",
+"link": "home_page",
+"location": "location",
+"name": "fullname"
+},
+"class_": "authomatic.providers.oauth2.GitHub",
+"consumer_key": "72e58bdabddb908dd7ee",
+"consumer_secret": "038a5045919ee6b845ea06dc9d55054386331333",
+"access_headers": {
+"User-Agent": "Plone (pas.plugins.authomatic)"
+}
+},
+"yahoo": {
+"id": 2,
+"display": {
+"title": "Yahoo",
+"cssclasses": {
+"button": "plone-btn plone-btn-default",
+"icon": "glypicon glyphicon-github"
+},
+"as_form": false
+},
+"propertymap": {
+"email": "email",
+"link": "home_page",
+"location": "location",
+"name": "fullname"
+},
+"class_": "authomatic.providers.oauth1.Yahoo",
+"consumer_key": "dj0yJmk9M3phT1hNTHNMeXQ1JmQ9WVdrOU5uRTRZa2hITjJzbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD04Zg--",
+"consumer_secret": "269ae9ee48e7973717f71a016e4c36dd5f8ed9cc",
+"access_headers": {
+"User-Agent": "Plone (pas.plugins.authomatic)"
+}
+},
+"saeon": {
+"id": 10,
+"display": {
+"title": "SAEON",
+"cssclasses": {
+"button": "plone-btn plone-btn-default",
+"icon": "glypicon glyphicon-github"
+},
+"as_form": false
+},
+"propertymap": {
+"email": "email",
+"link": "home_page",
+"location": "location",
+"name": "fullname"
+},
+"class_": "dirisa.authomatic.saeon.SAEON",
+"consumer_key": "WebTide Authorization Code",
+"consumer_secret": "WebT1de",
+"access_headers": {
+"User-Agent": "Plone (pas.plugins.authomatic)"
+},
+"scope": ["openid profile email"]
+}
+}
+"""
